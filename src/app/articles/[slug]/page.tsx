@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArticleDetail } from '@/components/articles/ArticleDetail'
+import { CommentsList } from '@/components/comments/CommentsList'
 import { getArticleSsr } from '@/lib/api/articles'
 
 interface ArticlePageProps {
@@ -62,6 +63,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </div>
       
       <ArticleDetail article={article} />
+      
+      {/* Comments Section */}
+      <div className="border-t border-gray-200 mt-12">
+        <CommentsList articleSlug={slug} />
+      </div>
     </div>
   )
 }
