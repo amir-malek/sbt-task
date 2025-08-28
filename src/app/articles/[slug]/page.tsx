@@ -1,33 +1,70 @@
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Header from '@/components/common/Header'
-import Footer from '@/components/common/Footer'
-import ArticleDetail from '@/components/articles/ArticleDetail'
-import CommentsList from '@/components/comments/CommentsList'
-import { getArticle } from '@/lib/api/articles'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ArticleDetail } from '@/components/articles/ArticleDetail'
+import { getArticleSsr } from '@/lib/api/articles'
 
 interface ArticlePageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  try {
+    const { slug } = await params
+    const response = await getArticleSsr(slug)
+    
+    if (!response) {
+      return {
+        title: 'Article Not Found',
+      }
+    }
+
+    const { article } = response
+
+    return {
+      title: `${article.title} - Blog Platform`,
+      description: article.description,
+      openGraph: {
+        title: article.title,
+        description: article.description,
+        type: 'article',
+        authors: [article.author.username],
+        publishedTime: article.createdAt,
+        modifiedTime: article.updatedAt,
+      },
+    }
+  } catch (error) {
+    return {
+      title: 'Article Not Found',
+    }
+  }
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  try {
-    const { article } = await getArticle(params.slug)
-    
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <ArticleDetail article={article} />
-            <div className="mt-12 pt-8 border-t">
-              <CommentsList articleSlug={article.slug} />
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    )
-  } catch {
+  const { slug } = await params
+  const response = await getArticleSsr(slug)
+  
+  if (!response) {
     notFound()
   }
+
+  const { article } = response
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-6">
+        <Button asChild variant="outline">
+          <Link href="/articles">
+            ← Back to Articles
+          </Link>
+        </Button>
+      </div>
+      
+      <ArticleDetail article={article} />
+    </div>
+  )
 }
+
+// Enable ISR for article pages
+export const revalidate = 3600 // Revalidate every hour
