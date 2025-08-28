@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Blog Platform',
-  description: 'A simple blog platform showcasing clean architecture',
+  description: 'A simple blog platform',
   manifest: '/manifest.json',
 }
 
@@ -22,7 +22,6 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
-        <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>

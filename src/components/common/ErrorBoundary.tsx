@@ -24,23 +24,26 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error to monitoring service (e.g., Sentry, LogRocket)
-    console.error('ErrorBoundary caught an error:', {
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      },
-      errorInfo: {
-        componentStack: errorInfo.componentStack,
-      },
-      timestamp: new Date().toISOString(),
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'Server',
-      url: typeof window !== 'undefined' ? window.location.href : 'Server',
-    })
-
-    // In production, you would send this to your error tracking service
-    // Example: Sentry.captureException(error, { contexts: { react: errorInfo } })
+    if (process.env.NODE_ENV === 'development') {
+      console.error('ErrorBoundary caught an error:', {
+        error: {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        },
+        errorInfo: {
+          componentStack: errorInfo.componentStack,
+        },
+        timestamp: new Date().toISOString(),
+        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'Server',
+        url: typeof window !== 'undefined' ? window.location.href : 'Server',
+      })
+    } else {
+      // Log minimal error information in production
+      console.error('Application error occurred:', error.message)
+      // In a real application, you would send this to your error reporting service
+      // e.g., Sentry, LogRocket, etc.
+    }
   }
 
   render() {
