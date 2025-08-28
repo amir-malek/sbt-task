@@ -1,49 +1,96 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { Button } from '@/components/ui/button'
+import { ArticleCard } from './ArticleCard'
+import { LoadingSpinner, ArticleListSkeleton } from '@/components/common/LoadingSpinner'
+import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import { useArticles } from '@/hooks/useArticles'
-import ArticleCard from './ArticleCard'
+import type { GetArticlesParams } from '@/lib/api/articles'
 
-export default function ArticlesList() {
-  const { data, isLoading, error } = useArticles()
+interface ArticlesListProps {
+  filters?: Omit<GetArticlesParams, 'limit' | 'offset'>
+}
+
+function ArticlesListContent({ filters }: ArticlesListProps) {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error,
+  } = useArticles(filters)
+
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    rootMargin: '100px',
+  })
+
+  // Auto-load next page when intersection observer triggers
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
   if (isLoading) {
-    return (
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="h-48 bg-muted rounded-lg mb-4"></div>
-            <div className="space-y-2">
-              <div className="h-4 bg-muted rounded w-3/4"></div>
-              <div className="h-4 bg-muted rounded w-1/2"></div>
-              <div className="h-20 bg-muted rounded w-full"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    )
+    return <ArticleListSkeleton />
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-red-500">Failed to load articles</p>
-      </div>
-    )
+    throw error
   }
 
-  if (!data?.articles?.length) {
+  const articles = data?.pages.flatMap(page => page.articles) ?? []
+  const totalCount = data?.pages[0]?.articlesCount ?? 0
+
+  if (articles.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground">No articles found</p>
+      <div className="text-center py-12">
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No articles found</h3>
+        <p className="text-gray-600">Check back later for new content.</p>
       </div>
     )
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {data.articles.map((article) => (
-        <ArticleCard key={article.slug} article={article} />
-      ))}
+    <div className="space-y-6">
+      <div className="text-sm text-gray-600 mb-6">
+        Showing {articles.length} of {totalCount} articles
+      </div>
+      
+      <div className="grid gap-6">
+        {articles.map((article) => (
+          <ArticleCard key={article.slug} article={article} />
+        ))}
+      </div>
+
+      {/* Infinite scroll trigger */}
+      <div ref={ref} className="flex justify-center py-6">
+        {isFetchingNextPage && <LoadingSpinner />}
+        {hasNextPage && !isFetchingNextPage && (
+          <Button
+            onClick={() => fetchNextPage()}
+            variant="outline"
+            className="w-full max-w-xs"
+          >
+            Load More Articles
+          </Button>
+        )}
+        {!hasNextPage && articles.length > 0 && (
+          <p className="text-gray-500">You've reached the end of the articles</p>
+        )}
+      </div>
     </div>
+  )
+}
+
+export function ArticlesList(props: ArticlesListProps) {
+  return (
+    <ErrorBoundary>
+      <ArticlesListContent {...props} />
+    </ErrorBoundary>
   )
 }
