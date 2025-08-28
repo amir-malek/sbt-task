@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { CommentCard } from './CommentCard'
@@ -79,7 +80,8 @@ function CommentsListContent({ articleSlug }: CommentsListProps) {
           size="sm"
           className="text-gray-500 hover:text-gray-700"
         >
-          🔄 Refresh
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Refresh
         </Button>
       </div>
 

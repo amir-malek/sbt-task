@@ -1,41 +1,15 @@
-import { memo, useState } from 'react'
+import { memo } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { Heart } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { AuthorAvatar } from '@/components/common/AuthorAvatar'
 import { formatDateRelative } from '@/lib/utils/formatDate'
 import { MAX_VISIBLE_TAGS } from '@/lib/utils/constants'
 import type { Article } from '@/types'
 
 interface ArticleCardProps {
   article: Article
-}
-
-// Avatar component with error handling
-function AuthorAvatar({ author }: { author: Article['author'] }) {
-  const [imageError, setImageError] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
-
-  return (
-    <div className="relative h-8 w-8 rounded-full overflow-hidden bg-gray-200">
-      {author.image && !imageError ? (
-        <Image
-          src={author.image}
-          alt={author.username}
-          fill
-          className={`object-cover transition-opacity duration-200 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageError(true)}
-        />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-purple-500 text-white text-xs font-semibold">
-          {author.username.charAt(0).toUpperCase()}
-        </div>
-      )}
-    </div>
-  )
 }
 
 function ArticleCardComponent({ article }: ArticleCardProps) {
@@ -74,7 +48,8 @@ function ArticleCardComponent({ article }: ArticleCardProps) {
               )}
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span>❤️ {article.favoritesCount}</span>
+              <Heart className="h-4 w-4" />
+              <span>{article.favoritesCount}</span>
             </div>
           </div>
         </CardContent>
@@ -83,5 +58,4 @@ function ArticleCardComponent({ article }: ArticleCardProps) {
   )
 }
 
-// Memoized component to prevent unnecessary re-renders
 export const ArticleCard = memo(ArticleCardComponent)
