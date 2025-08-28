@@ -11,6 +11,13 @@ export class ApiError extends Error {
   }
 }
 
+// Global toast handler - will be set by the app
+let globalToastHandler: ((toast: { title: string; description?: string; type: 'success' | 'error' | 'info' }) => void) | null = null
+
+export function setGlobalToastHandler(handler: typeof globalToastHandler) {
+  globalToastHandler = handler
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -27,11 +34,23 @@ export async function apiRequest<T>(
     })
 
     if (!response.ok) {
-      throw new ApiError(
+      const errorData = await response.json().catch(() => ({}))
+      const error = new ApiError(
         `HTTP ${response.status}`,
         response.status,
-        await response.json().catch(() => ({}))
+        errorData
       )
+
+      // Show error toast for client-side requests
+      if (typeof window !== 'undefined' && globalToastHandler) {
+        globalToastHandler({
+          title: 'Something went wrong',
+          description: `Failed to ${options.method || 'GET'} ${endpoint}`,
+          type: 'error'
+        })
+      }
+
+      throw error
     }
 
     return await response.json()
@@ -41,12 +60,34 @@ export async function apiRequest<T>(
     }
     
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new ApiError('Network connection failed', 0)
+      const networkError = new ApiError('Network connection failed', 0)
+      
+      // Show network error toast for client-side requests
+      if (typeof window !== 'undefined' && globalToastHandler) {
+        globalToastHandler({
+          title: 'Network Error',
+          description: 'Please check your connection and try again',
+          type: 'error'
+        })
+      }
+      
+      throw networkError
     }
     
-    throw new ApiError(
+    const unknownError = new ApiError(
       error instanceof Error ? error.message : 'Unknown error occurred',
       0
     )
+
+    // Show error toast for client-side requests
+    if (typeof window !== 'undefined' && globalToastHandler) {
+      globalToastHandler({
+        title: 'Unexpected Error',
+        description: 'Something went wrong',
+        type: 'error'
+      })
+    }
+    
+    throw unknownError
   }
 }
