@@ -2,7 +2,7 @@
 
 import { useComments } from '@/hooks/useComments'
 import CommentCard from './CommentCard'
-import LoadingSpinner from '@/components/common/LoadingSpinner'
+import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 
 interface CommentsListProps {
   articleSlug: string
