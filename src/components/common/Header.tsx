@@ -1,18 +1,17 @@
 import Link from 'next/link'
 
-export default function Header() {
+export function Header() {
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <header className="border-b bg-white">
       <div className="container mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
-          <Link href="/articles" className="text-2xl font-bold hover:text-primary transition-colors">
+        <nav className="flex items-center justify-between">
+          <Link href="/" className="text-2xl font-bold text-gray-900">
             Blog Platform
           </Link>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <Link 
               href="/articles" 
-              className="text-sm font-medium hover:text-primary transition-colors"
-              aria-label="View all articles"
+              className="text-gray-600 hover:text-gray-900 transition-colors"
             >
               Articles
             </Link>
