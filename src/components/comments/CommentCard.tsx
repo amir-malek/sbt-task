@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Heart } from 'lucide-react'
 import { AuthorAvatar } from '@/components/common/AuthorAvatar'
 import { formatDateRelative } from '@/lib/utils/formatDate'
@@ -8,7 +9,7 @@ interface CommentCardProps {
   level?: number
 }
 
-export function CommentCard({ comment, level = 0 }: CommentCardProps) {
+function CommentCardComponent({ comment, level = 0 }: CommentCardProps) {
   const maxNestingLevel = 3
   const isNested = level > 0
   const canNest = level < maxNestingLevel
@@ -32,7 +33,7 @@ export function CommentCard({ comment, level = 0 }: CommentCardProps) {
         {/* Comment Body */}
         <div className="text-gray-700 leading-relaxed">
           {comment.body.split('\n').map((paragraph, index) => (
-            <p key={`${comment.id}-paragraph-${index}`} className={index > 0 ? 'mt-2' : ''}>
+            <p key={index} className={index > 0 ? 'mt-2' : ''}>
               {paragraph}
             </p>
           ))}
@@ -60,3 +61,5 @@ export function CommentCard({ comment, level = 0 }: CommentCardProps) {
     </div>
   )
 }
+
+export const CommentCard = memo(CommentCardComponent)

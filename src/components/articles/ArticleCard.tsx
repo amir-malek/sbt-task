@@ -14,7 +14,7 @@ interface ArticleCardProps {
 
 function ArticleCardComponent({ article }: ArticleCardProps) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-md transition-shadow" data-testid="article-card">
       <Link href={`/articles/${article.slug}`}>
         <CardHeader>
           <div className="flex items-center gap-3 mb-3">

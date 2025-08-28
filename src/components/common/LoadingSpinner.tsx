@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
@@ -6,7 +7,7 @@ interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
-export function LoadingSpinner({ className, size = 'md' }: LoadingSpinnerProps) {
+function LoadingSpinnerComponent({ className, size = 'md' }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-8 w-8',
@@ -14,17 +15,17 @@ export function LoadingSpinner({ className, size = 'md' }: LoadingSpinnerProps) 
   }
 
   return (
-    <div className={cn('flex items-center justify-center', className)}>
+    <div className={cn('flex items-center justify-center', className)} role="progressbar" aria-label="Loading content">
       <div className={cn('animate-spin rounded-full border-2 border-gray-300 border-t-gray-900', sizeClasses[size])} />
     </div>
   )
 }
 
-export function ArticleListSkeleton() {
+function ArticleListSkeletonComponent() {
   return (
     <div className="space-y-6">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="space-y-3">
+        <div key={i} className="space-y-3" data-testid={`skeleton-${i}`}>
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-4 w-1/2" />
           <Skeleton className="h-20 w-full" />
@@ -37,3 +38,6 @@ export function ArticleListSkeleton() {
     </div>
   )
 }
+
+export const LoadingSpinner = memo(LoadingSpinnerComponent)
+export const ArticleListSkeleton = memo(ArticleListSkeletonComponent)

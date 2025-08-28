@@ -1,36 +1,187 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blog Platform
 
-## Getting Started
+A modern, responsive blog platform built with Next.js 15, showcasing clean architecture and best practices. Features articles listing, detailed views, comments system, and PWA capabilities.
 
-First, run the development server:
+## 🚀 Features
 
+- **Articles Management**: Browse and read articles with infinite scroll pagination
+- **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **Comments System**: View and interact with article comments
+- **Progressive Web App**: Offline support and installable experience
+- **Modern Stack**: Next.js 15, TypeScript, Tailwind CSS, React Query
+- **Clean Architecture**: Repository pattern, proper error handling, comprehensive testing
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript (strict mode)
+- **Styling**: Tailwind CSS + Shadcn/UI
+- **State Management**: Zustand + React Query
+
+### Features
+- **Data Fetching**: React Query with infinite scroll
+- **PWA**: next-pwa with offline caching
+- **Forms**: React Hook Form
+- **Testing**: Jest + React Testing Library + Playwright
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+
+### Setup
 ```bash
+# Clone repository
+git clone <repository-url>
+cd blog-platform
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🧪 Testing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Unit Tests
+```bash
+# Run all unit tests
+npm run test
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Run tests in watch mode
+npm run test:watch
 
-## Learn More
+# Run tests with coverage
+npm run test:coverage
+```
 
-To learn more about Next.js, take a look at the following resources:
+### E2E Tests
+```bash
+# Run end-to-end tests
+npm run test:e2e
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Run E2E tests with UI
+npm run test:e2e:ui
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run performance tests
+npm run test:performance
+```
 
-## Deploy on Vercel
+### Test Coverage
+The project maintains high test coverage with:
+- Unit tests for components, hooks, and utilities
+- Integration tests for critical user flows
+- E2E tests for complete user journeys
+- Performance audits with Lighthouse
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🏗️ Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Project Structure
+```
+src/
+├── app/                    # Next.js App Router pages
+├── components/             # Reusable UI components
+│   ├── ui/                # Shadcn/UI base components
+│   ├── common/            # App-specific components
+│   ├── articles/          # Article-related components
+│   └── comments/          # Comment-related components
+├── lib/                   # Utilities and configurations
+│   ├── api/              # API repository layer
+│   ├── stores/           # Zustand stores
+│   ├── providers/        # React context providers
+│   └── utils/            # Helper functions
+├── types/                 # TypeScript type definitions
+└── hooks/                # Custom React hooks
+```
+
+### Key Patterns
+- **Repository Pattern**: Abstracts API calls for better testing and maintenance
+- **Component Composition**: Reusable, single-responsibility components
+- **Custom Hooks**: Encapsulated logic for data fetching and state management
+- **Error Boundaries**: Graceful error handling throughout the application
+- **Progressive Enhancement**: Core functionality works without JavaScript
+
+## 🚀 Deployment
+
+### Build
+```bash
+# Create production build
+npm run build
+
+# Start production server
+npm start
+```
+
+### Environment Variables
+```env
+NEXT_PUBLIC_API_URL=https://api.realworld.io/api
+```
+
+### PWA Features
+- Offline caching for visited pages
+- App installation prompt
+- Service worker for background sync
+- Optimized loading strategies
+
+## 🔧 Development
+
+### Code Quality
+- **ESLint**: Code linting and style enforcement
+- **TypeScript**: Strict typing for better developer experience
+- **Prettier**: Automated code formatting
+- **Husky**: Pre-commit hooks for quality control
+
+### Performance Optimizations
+- Next.js App Router with ISR
+- React Query caching and deduplication  
+- Image optimization
+- Bundle splitting
+- PWA caching strategies
+
+## 📋 API Integration
+
+### RealWorld API
+This project integrates with the [RealWorld API](https://api.realworld.io/api) (Conduit):
+
+**Endpoints Used:**
+- `GET /articles` - List articles with pagination
+- `GET /articles/:slug` - Get article details
+- `GET /articles/:slug/comments` - Get article comments
+- `GET /tags` - Get available tags
+
+### Data Models
+The application uses well-defined TypeScript interfaces matching the API schema:
+- Article, Author, Comment types
+- Proper error handling and loading states
+- Optimistic updates where applicable
+
+## 🤝 Contributing
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Write tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
+
+### Coding Standards
+- Follow TypeScript strict mode
+- Write tests for new features
+- Use conventional commit messages
+- Ensure responsive design
+- Maintain accessibility standards
+
+## 📝 License
+
+MIT License - see LICENSE file for details
+
+## 🙏 Acknowledgments
+
+- [RealWorld API](https://realworld-docs.netlify.app/) for the backend service
+- [Shadcn/UI](https://ui.shadcn.com/) for the component library
+- [Next.js](https://nextjs.org/) team for the excellent framework
