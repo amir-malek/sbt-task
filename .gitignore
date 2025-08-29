@@ -40,11 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# internal documentation and development files
-CLAUDE.md
-PHASE-*.md
-.playwright-mcp/
-
 # test artifacts
 /test-results/
 /playwright-report/
