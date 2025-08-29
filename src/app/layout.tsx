@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { AppProviders } from '@/components/providers/AppProviders'
 import { Header } from '@/components/common/Header'
+import { ServiceWorkerRegistration } from '@/components/common/ServiceWorkerRegistration'
+import { UpdateNotification } from '@/components/common/UpdateNotification'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,6 +27,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
+        <ServiceWorkerRegistration />
         <AppProviders>
           <div className="min-h-screen bg-gray-50">
             <Header />
@@ -32,6 +35,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+          <UpdateNotification />
         </AppProviders>
       </body>
     </html>

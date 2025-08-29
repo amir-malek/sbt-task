@@ -1,6 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import DOMPurify from "dompurify";
 import { Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AuthorAvatar } from "@/components/common/AuthorAvatar";
@@ -14,25 +17,60 @@ interface ArticleDetailProps {
 
 function ArticleBody({
   body,
-  articleSlug,
 }: {
   body: string;
-  articleSlug: string;
 }) {
-  const paragraphs = useMemo(() => {
-    return body
-      .split(/\r?\n/)
-      .map((p) => p.trim())
-      .filter((p) => p.length > 0);
+  // Sanitize the markdown content for security
+  const sanitizedBody = useMemo(() => {
+    if (typeof window === 'undefined') {
+      // Server-side: return as-is for initial render
+      return body;
+    }
+    // Client-side: sanitize HTML that might be in the markdown
+    return DOMPurify.sanitize(body);
   }, [body]);
 
   return (
-    <div className="prose prose-lg max-w-none">
-      {paragraphs.map((paragraph, index) => (
-        <p key={`${articleSlug}-${index}`} className="mb-4">
-          {paragraph}
-        </p>
-      ))}
+    <div className="prose prose-lg prose-gray max-w-none dark:prose-invert">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          // Custom component overrides can go here if needed
+          h1: ({ children }) => (
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 mt-8">{children}</h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4 mt-6">{children}</h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 mt-5">{children}</h3>
+          ),
+          code: ({ children, className, ...props }) => {
+            const inline = !className;
+            return inline ? (
+              <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
+                {children}
+              </code>
+            ) : (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            );
+          },
+          pre: ({ children }) => (
+            <pre className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 overflow-x-auto">
+              {children}
+            </pre>
+          ),
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-4 py-2 italic text-gray-700 dark:text-gray-300">
+              {children}
+            </blockquote>
+          ),
+        }}
+      >
+        {sanitizedBody}
+      </ReactMarkdown>
     </div>
   );
 }
@@ -78,7 +116,7 @@ export function ArticleDetail({ article }: ArticleDetailProps) {
         )}
       </header>
 
-      <ArticleBody body={article.body} articleSlug={article.slug} />
+      <ArticleBody body={article.body} />
     </article>
   );
 }

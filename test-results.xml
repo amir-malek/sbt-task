@@ -1,0 +1,22 @@
+<testsuites id="" name="" tests="5" failures="0" skipped="0" errors="0" time="5.480838">
+<testsuite name="e2e/article-detail.spec.ts" timestamp="2025-08-29T20:08:49.065Z" hostname="chromium" tests="1" failures="0" skipped="0" time="3.191" errors="0">
+<testcase name="Article Detail Page › should navigate back to articles" classname="e2e/article-detail.spec.ts" time="3.191">
+</testcase>
+</testsuite>
+<testsuite name="e2e/article-detail.spec.ts" timestamp="2025-08-29T20:08:49.065Z" hostname="firefox" tests="1" failures="0" skipped="0" time="2.971" errors="0">
+<testcase name="Article Detail Page › should navigate back to articles" classname="e2e/article-detail.spec.ts" time="2.971">
+</testcase>
+</testsuite>
+<testsuite name="e2e/article-detail.spec.ts" timestamp="2025-08-29T20:08:49.065Z" hostname="webkit" tests="1" failures="0" skipped="0" time="3.244" errors="0">
+<testcase name="Article Detail Page › should navigate back to articles" classname="e2e/article-detail.spec.ts" time="3.244">
+</testcase>
+</testsuite>
+<testsuite name="e2e/article-detail.spec.ts" timestamp="2025-08-29T20:08:49.065Z" hostname="Mobile Chrome" tests="1" failures="0" skipped="0" time="3.203" errors="0">
+<testcase name="Article Detail Page › should navigate back to articles" classname="e2e/article-detail.spec.ts" time="3.203">
+</testcase>
+</testsuite>
+<testsuite name="e2e/article-detail.spec.ts" timestamp="2025-08-29T20:08:49.065Z" hostname="Mobile Safari" tests="1" failures="0" skipped="0" time="3.182" errors="0">
+<testcase name="Article Detail Page › should navigate back to articles" classname="e2e/article-detail.spec.ts" time="3.182">
+</testcase>
+</testsuite>
+</testsuites>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import type { Article } from '@/types/article'
+import type { Article } from '@/types/api'
 
 interface AuthorAvatarProps {
   author: Article['author']
