@@ -1,49 +1,68 @@
 # Blog Platform
 
-A modern, responsive blog platform built with Next.js 15, showcasing clean architecture and best practices. Features articles listing, detailed views, comments system, and PWA capabilities.
+A modern, responsive blog platform built with Next.js 15, showcasing clean architecture and best practices. Features articles listing, detailed views, comments system, and comprehensive PWA capabilities with manual service worker implementation.
 
 ## 🚀 Features
 
 - **Articles Management**: Browse and read articles with infinite scroll pagination
-- **Responsive Design**: Optimized for mobile, tablet, and desktop
-- **Comments System**: View and interact with article comments
-- **Progressive Web App**: Offline support and installable experience
-- **Modern Stack**: Next.js 15, TypeScript, Tailwind CSS, React Query
-- **Clean Architecture**: Repository pattern, proper error handling, comprehensive testing
+- **Responsive Design**: Optimized for mobile, tablet, and desktop experiences
+- **Comments System**: View and interact with article comments with real-time refresh
+- **Progressive Web App**: Complete offline support, install prompts, and background sync
+- **Manual Service Worker**: Custom PWA implementation without external dependencies
+- **Modern Stack**: Next.js 15, TypeScript, Tailwind CSS 4, React Query, Zustand
+- **Clean Architecture**: Repository pattern, error boundaries, comprehensive testing suite
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS + Shadcn/UI
-- **State Management**: Zustand + React Query
+### Core Framework
+- **Framework**: Next.js 15 with App Router and TypeScript strict mode
+- **Styling**: Tailwind CSS 4 with Shadcn/UI component library
+- **State Management**: Zustand for global state + React Query for server state
 
-### Features
-- **Data Fetching**: React Query with infinite scroll
-- **PWA**: next-pwa with offline caching
-- **Forms**: React Hook Form
-- **Testing**: Jest + React Testing Library + Playwright
+### PWA & Offline Features
+- **Service Worker**: Manual implementation using esbuild for optimal control
+- **Caching Strategy**: Network-first with cache fallback for navigation requests
+- **Offline Support**: Custom offline page with cached content access
+- **Build Process**: Automated service worker generation with precache manifest
+- **Background Sync**: Message handling between main thread and service worker
 
 ## 📦 Installation
 
 ### Prerequisites
 - Node.js 18+ 
-- npm or yarn
+- pnpm (recommended) or npm
 
-### Setup
+### Quick Start
 ```bash
 # Clone repository
 git clone <repository-url>
-cd blog-platform
+cd shahbet-task
 
 # Install dependencies
-npm install
+pnpm install
 
-# Start development server
-npm run dev
+# Build service worker and start development
+pnpm run build:sw
+pnpm run dev
 
 # Open http://localhost:3000
+```
+
+### PWA Build Process
+The project uses a custom service worker build system:
+
+```bash
+# Build service worker only
+pnpm run build:sw
+
+# Full production build (includes service worker)
+pnpm run build
+
+# The build process:
+# 1. Scans public/ directory for static assets
+# 2. Generates precache manifest with file hashes
+# 3. Bundles worker/index.js with esbuild
+# 4. Outputs optimized /public/sw.js
 ```
 
 ## 🧪 Testing
@@ -122,11 +141,80 @@ npm start
 NEXT_PUBLIC_API_URL=https://api.realworld.io/api
 ```
 
-### PWA Features
-- Offline caching for visited pages
-- App installation prompt
-- Service worker for background sync
-- Optimized loading strategies
+## 📱 PWA Features & Offline Support
+
+### Manual Service Worker Implementation
+This project implements a **fully manual PWA solution** without external dependencies like `next-pwa` or `workbox`. This provides complete control over caching strategies and offline behavior.
+
+#### Architecture Overview
+```
+├── worker/                     # Service Worker Source
+│   └── index.js               # Manual SW implementation
+├── scripts/
+│   └── build-sw.js           # SW build process
+└── public/
+    ├── sw.js                 # Built service worker
+    ├── manifest.json         # PWA manifest
+    └── [static assets]       # Auto-cached resources
+```
+
+#### Caching Strategies
+
+**Static Assets (Cache-First)**
+- Images, fonts, icons
+- Cached indefinitely with cache busting
+
+**Navigation Requests (Network-First with Fallback)**
+- HTML pages try network first (3s timeout)
+- Falls back to cache if available
+- Shows custom offline page as final fallback
+
+**API Requests (Network-First)**
+- Real-time data prioritized
+- Cached responses used when offline
+- Automatic retry on connection restore
+
+#### Offline Capabilities
+
+**Custom Offline Page** (`/offline`)
+- Displays when navigation fails offline
+- Shows cached articles list
+- Provides navigation to cached pages
+- Connection status indicator
+
+**Offline-First Features**
+- Install prompts for supported browsers
+- Background sync for queued actions
+- Service worker update notifications
+- Message passing between SW and main thread
+
+#### Testing Offline Mode
+
+1. **Development Testing**
+   ```bash
+   # Start the development server
+   pnpm run dev
+   
+   # In Chrome DevTools:
+   # 1. Go to Application → Service Workers
+   # 2. Check "Offline" checkbox
+   # 3. Navigate to any page to see offline behavior
+   ```
+
+2. **Production Testing**
+   ```bash
+   pnpm run build
+   pnpm start
+   
+   # Disable network in browser DevTools
+   # Navigate to test cached/offline pages
+   ```
+
+#### PWA Installation
+- Automatic install prompts on supported browsers
+- Custom install button component
+- Proper manifest configuration with icons
+- iOS and Android support
 
 ## 🔧 Development
 
@@ -137,11 +225,40 @@ NEXT_PUBLIC_API_URL=https://api.realworld.io/api
 - **Husky**: Pre-commit hooks for quality control
 
 ### Performance Optimizations
-- Next.js App Router with ISR
-- React Query caching and deduplication  
-- Image optimization
-- Bundle splitting
-- PWA caching strategies
+- Next.js App Router with ISR (3600s revalidation)
+- React Query caching and deduplication with infinite scroll
+- Next.js Image optimization with remote patterns
+- Automatic bundle splitting and code splitting
+- Custom PWA caching strategies optimized for blog content
+- Service worker precaching of critical assets
+- Network-first with timeout for optimal perceived performance
+
+### Service Worker Development
+
+**Local Development**
+```bash
+# The service worker is built automatically during development
+pnpm run build:sw
+
+# Watch for changes (manual rebuild required)
+# Edit worker/index.js then run build:sw
+```
+
+**Service Worker Architecture**
+- **Cache Management**: Automatic cleanup of old cache versions
+- **Network Strategies**: Configurable per resource type
+- **Error Handling**: Graceful fallbacks for all request types
+- **Background Sync**: Queued actions for offline scenarios
+- **Update Lifecycle**: Proper SW update notifications
+
+**Debugging Service Worker**
+```bash
+# Enable detailed logging in worker/index.js
+console.log('Service Worker: [event] details...')
+
+# Chrome DevTools → Application → Service Workers
+# View registration status, update cycles, and cache storage
+```
 
 ## 📋 API Integration
 
